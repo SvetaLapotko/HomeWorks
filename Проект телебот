@@ -1,0 +1,29 @@
+import telebot
+
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+bot = telebot.TeleBot("6343774820:AAG60PvRD20ueo9Kt_Iwftf5y6qS5yAGgtE")
+
+@bot.message_handler(commands=['start'])
+def send_menu(message):
+    keyboard = InlineKeyboardMarkup()
+    keyboard.row(InlineKeyboardButton("О нас", url='https://marketing100agency.bitrix24site.by/'))
+    keyboard.row(InlineKeyboardButton("Услуги", callback_data='services'))
+    keyboard.row(InlineKeyboardButton("Цены", callback_data='prices'))
+    keyboard.row(InlineKeyboardButton("Портфолио", callback_data='portfolio'))
+
+    bot.reply_to(message, "Выберите пункт меню:", reply_markup=keyboard)
+
+@bot.callback_query_handler(func=lambda call: True)
+def handle_button_click(call):
+    if call.data == 'services':
+        bot.send_message(call.message.chat.id, "Услуги - перечень предоставляемых услуг.")
+    elif call.data == 'prices':
+        bot.send_message(call.message.chat.id, "Цены - информация о стоимости услуг.")
+    elif call.data == 'portfolio':
+        photo_path = "path_to_portfolio_image.2.hng"
+        with open( '2.png', 'rb') as photo:
+            bot.send_photo(call.message.chat.id, photo, caption="Это одно из наших работ.")
+    else:
+        bot.send_message(call.message.chat.id, "Неизвестный пункт меню.")
+
+bot.polling( none_stop=True )
